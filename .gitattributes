@@ -1,0 +1,5 @@
+*.obj filter=lfs diff=lfs merge=lfs -text
+*.assets filter=lfs diff=lfs merge=lfs -text
+77a79c84e91bf51d0f9ec0a7b58ff1c9 filter=lfs diff=lfs merge=lfs -text
+ad8fd027798bf82e9f24ac97352f15c6 filter=lfs diff=lfs merge=lfs -text
+f0774a02ae14253e729a5ab5e2dfd2bd filter=lfs diff=lfs merge=lfs -text

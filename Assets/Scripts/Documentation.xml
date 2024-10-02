@@ -1,0 +1,71 @@
+<Documentation>
+    <CutManager>
+        <summary>Handles the logic to create the inside object.</summary>
+        <Methods name="Start">
+            <summary>Subcribes to events and initializes object references.</summary>
+            <remarks>
+                First subscribes to two events, OnPathNodeCreationFinished and OnPathCompleted. The former triggers when all the PathNode objects
+                have been successfully created, and the latter triggers when the Follower object completes its path.
+                Next, it gets three references from the ThingToCut for use when setting its properties later, a MeshRenderer component, a MeshFilter component, and the renderer's bounds.
+                Lastly, it calculates the width of the object using its bounds and initializes an empty mesh.
+            </remarks>
+        </Methods>
+        <Methods name="OnPathNodeCreationFinished">
+            <summary>Triggered by the OnPathNodeCreationFinished event. All the methods in the algorithm are run in sequence from this method.</summary>
+            <remarks>
+                First runs FindVertices to initialize the vertices list, then checks if the points are valid. If it is, it continues with the algorithm, ending
+                by invoking the OnInsideCompleted event. If the points are invalid, the lists are cleared and the OnInvalidShape event is triggered.
+            </remarks>
+        </Methods>
+        <Methods name="OnPathCompleted">
+            <summary>Triggered by the OnPathCompleted event. Handles the final configurations of the inside object.</summary>
+            <remarks>
+                First checks for mesh errors, then updates the mesh with the final points and triangles. Then, the object is configured with the correct
+                scale and its object manipulation components are turned on.
+            </remarks>
+        </Methods>
+        <Methods name="FindVertices">
+            <summary>Uses the PathNodeList to initialize the vertices, frontVertices, and indices lists.</summary>
+        </Methods>
+        <Methods name="ClearLists">
+            <summary>Clears the three main lists used in the algorithm; vertices, frontVertices, and indices.</summary>
+        </Methods>
+        <Methods name="IsShapeValid">
+            <summary>Checks if the shape drawn by the user is a valid 2D shape.</summary>
+            <returns><c>true</c> if the shape is valid; otherwise <c>false</c>.</returns>
+            <remarks>
+                Starts by creating a list of segment objects to work from. Then, it runs through each segment in the shape and checks for intersections.
+                If there are any intersections at all, it returns false. If it makes it through each one without finding an intersection, then it returns true.
+            </remarks>
+        </Methods>
+        <Methods name="CheckClockwise">
+            <summary>Checks if the vertices are listed in clockwise order, and reverses the list if not.</summary>
+            <remarks>
+                Runs through each point and computes a simple formula: (next.x - current.x)*(next.y + current.y). The method keeps a running total of each of 
+                these values, and if the final total is negative it reverses the list.
+            </remarks>
+        </Methods>
+        <Methods name="Triangulate">
+            <summary>Uses a triangulation algorithm to record triangles for use in the final mesh.</summary>
+            <remarks>
+                There are two main loops here, the outer while loop that continues until there are three points left or until count reaches 100
+                (an arbitrary value to prevent infinite loops), and the inner for loop that runs through each index. For each index, the algorithm needs to 
+                calculate two things: 1. Does the angle made between this point, the next one, and the previous one, make an acute angle? and 2. If a triangle
+                is drawn between these points, does that triangle contain any other point? The acute angle check uses the Orientation method in the Segment class
+                to check if the three points are arranged in counter-clockwise order. If so, the angle must be acute. If the point passes that test, then it checks
+                each non-adjacent point to see if it's in the triangle by calculating the area of the three possible triangles there could be between the point in 
+                question and each combination of two points out of the current point, the previous point, and the next point. If those three areas add up to exactly 
+                the same as the original triangle, then the point in question is inside the triangle and it is invalid. The point is skipped over and the algorithm continues.
+                If the point is valid, the triangle is recorded and the point is removed from the list. This continues until there are three points left, then those three
+                are automatically added into the triangle list.
+            </remarks>
+        </Methods>
+        <Methods name="Area">
+            <summary>Calcuates the area of the triangle created by the three given points.</summary>
+            <param name="Point1">First point as a Vector2.</param>
+            <param name="Point2">Second point as a Vector2.</param>
+            <param name="Point3">Third point as a Vector2.</param>
+            <returns>The area of the triangle as a double.</returns>
+        </Methods>
+    </CutManager>
+</Documentation>
